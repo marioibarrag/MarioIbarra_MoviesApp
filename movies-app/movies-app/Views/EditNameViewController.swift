@@ -7,7 +7,12 @@
 
 import UIKit
 
+protocol EditNameDelegate: AnyObject {
+    func editName()
+}
+
 class EditNameViewController: UIViewController {
+    weak var delegate: EditNameDelegate?
     
     private let newNameLabel: UILabel = {
         let label = UILabel()
@@ -61,12 +66,12 @@ class EditNameViewController: UIViewController {
     }
 
     @objc private func saveNewName() {
-        print("Save new name button pressed.")
         if let name = nameTextField.text {
             if name.count > 2 {
                 UserDefaults.standard.set(name, forKey: Constants.defaultNameKey)
+                delegate?.editName()
                 dismiss(animated: true)
-                print("New name saved: \(UserDefaults.standard.string(forKey: Constants.defaultNameKey)!)")
+                nameTextField.text = ""
             } else {
                 print("Name must be at least 3 characters long")
                 // add warning text >= 3
@@ -74,7 +79,7 @@ class EditNameViewController: UIViewController {
         }
         // Add confirmation pop-up
         
-        dismiss(animated: true)
+//        dismiss(animated: true)
     }
     
 }

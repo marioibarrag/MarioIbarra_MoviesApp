@@ -8,6 +8,7 @@ class MoviesViewController: UIViewController {
     private var subscribers = Set<AnyCancellable>()
     private var tableViewViewType = 0
     private var searchArr: [Movie] = []
+    private let editNameVC = EditNameViewController()
     
     private lazy var deleteNameButton: UIButton = {
         let button = UIButton()
@@ -69,6 +70,7 @@ class MoviesViewController: UIViewController {
         
         assembleMVVM()
         setUpBinding()
+        editNameVC.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -143,7 +145,8 @@ class MoviesViewController: UIViewController {
     }
     
     @objc private func editDefaultName() {
-        present(EditNameViewController(), animated: true)
+        editNameVC.modalPresentationStyle = .fullScreen
+        present(editNameVC, animated: true)
     }
 
 }
@@ -258,4 +261,11 @@ extension MoviesViewController: UISearchBarDelegate {
             tableView.reloadData()
         }
     }
+}
+
+extension MoviesViewController: EditNameDelegate {
+    func editName() {
+        self.nameLabel.text = "Hello: \(self.defaults.string(forKey: Constants.defaultNameKey)!)"
+    }
+    
 }
