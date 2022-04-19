@@ -10,7 +10,7 @@ import UIKit
 class ViewController: UIViewController {
 
     
-    let defaults = UserDefaults.standard
+    private let defaults = UserDefaults.standard
     
     var nameTextField: UITextField = {
         let textField = UITextField()
@@ -32,7 +32,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
-        
         
     }
     
@@ -57,11 +56,14 @@ class ViewController: UIViewController {
     @objc private func saveButtonAction() {
         if let name = nameTextField.text {
             if name.count > 2 {
-                print("next screen")
                 let moviesVC = MoviesViewController()
                 moviesVC.modalPresentationStyle = .fullScreen
                 self.defaults.set(name, forKey: Constants.defaultNameKey)
-                self.present(moviesVC, animated: true)
+                
+                let navController = UINavigationController(rootViewController: moviesVC)
+                navController.modalPresentationStyle = .fullScreen
+                
+                self.present(navController, animated: true)
             } else {
                 print("Name must be at least 3 characters long")
                 // add warning text >= 3

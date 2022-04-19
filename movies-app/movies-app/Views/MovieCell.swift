@@ -1,14 +1,9 @@
-//
-//  MovieCellTableViewCell.swift
-//  movies-app
-//
-//  Created by Consultant on 4/5/22.
-//
-
 import UIKit
 
 class MovieCell: UITableViewCell {
 
+    var cellRow = 0
+    
     private var movieImage: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .lightGray
@@ -19,7 +14,6 @@ class MovieCell: UITableViewCell {
     private var movieTitleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
-        label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 20.0)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -29,23 +23,26 @@ class MovieCell: UITableViewCell {
     private var overviewLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 5
-//        label.adjustsFontSizeToFitWidth = true
-        label.textAlignment = .justified
         label.font = UIFont.systemFont(ofSize: 16.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private var favoriteButton: UIButton = {
+    var favoriteButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: Constants.emptyStarIcon), for: .normal)
-        button.addTarget(nil, action: #selector(setFavoriteMovie), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private var detailButton: UIButton = {
-        let button = UIButton()
+    var detailButtonPressed: () -> Void = {}
+    
+    private lazy var detailAction = UIAction { [weak self] _ in
+        self?.detailButtonPressed()
+    }
+    
+    private lazy var detailButton: UIButton = {
+        let button = UIButton(type: UIButton.ButtonType.roundedRect, primaryAction: detailAction)
         button.setTitle("Show details", for: .normal)
         button.backgroundColor = .blue
         button.setTitleColor(.white, for: .normal)
@@ -54,7 +51,6 @@ class MovieCell: UITableViewCell {
         return button
     }()
     
-    private var isFavorite = false
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -84,6 +80,7 @@ class MovieCell: UITableViewCell {
         
         detailButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
         detailButton.trailingAnchor.constraint(equalTo: movieTitleLabel.trailingAnchor).isActive = true
+        detailButton.widthAnchor.constraint(equalToConstant: 130).isActive = true
         
         overviewLabel.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 10).isActive = true
         overviewLabel.leadingAnchor.constraint(equalTo: movieTitleLabel.leadingAnchor).isActive = true
@@ -94,22 +91,29 @@ class MovieCell: UITableViewCell {
         favoriteButton.centerYAnchor.constraint(equalTo: detailButton.centerYAnchor).isActive = true
     }
     
-    func configureCell(image: UIImage, title: String, overview: String) {
-        movieImage.image = image
-        movieTitleLabel.text = title
-        overviewLabel.text = overview
-    }
-    
-    @objc func setFavoriteMovie() {
-        print("Favorite button pressed")
+    func configureCell(movie: Movie?, row: Int) {
+        movieTitleLabel.text = movie?.title ?? ""
+        overviewLabel.text = movie?.overview ?? ""
+        cellRow = row
         
-        if !isFavorite {
-            favoriteButton.setImage(UIImage(systemName: Constants.filledStarIcon), for: .normal)
-            isFavorite = true
-        } else {
-            favoriteButton.setImage(UIImage(systemName: Constants.emptyStarIcon), for: .normal)
-            isFavorite = false
+        guard let _ = movie?.imgData
+        else {
+            movieImage.image = UIImage(named: "no_image")
+            return
         }
+        
+        if let data = movie?.imgData {
+            movieImage.image = UIImage(data: data)
+        }
+        
+        if let fav = movie?.isFavorite {
+            if fav {
+                favoriteButton.setImage(UIImage(systemName: Constants.filledStarIcon), for: .normal)
+            } else {
+                favoriteButton.setImage(UIImage(systemName: Constants.emptyStarIcon), for: .normal)
+            }
+        }
+        
     }
     
 }

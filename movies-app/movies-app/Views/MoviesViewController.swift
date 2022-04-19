@@ -1,15 +1,13 @@
-//
-//  MoviesViewController.swift
-//  movies-app
-//
-//  Created by Consultant on 4/5/22.
-//
-
 import UIKit
+import Combine
 
 class MoviesViewController: UIViewController {
 
-    let defaults = UserDefaults.standard
+    private let defaults = UserDefaults.standard
+    private var viewModel: ViewModelPorotocol?
+    private var subscribers = Set<AnyCancellable>()
+    private var tableViewViewType = 0
+    private var searchArr: [Movie] = []
     
     private lazy var deleteNameButton: UIButton = {
         let button = UIButton()
@@ -21,7 +19,7 @@ class MoviesViewController: UIViewController {
     
     private var editNameButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+        button.setImage(UIImage(systemName: Constants.editIcon), for: .normal)
         button.addTarget(nil, action: #selector(editDefaultName), for: .touchUpInside)
         return button
     }()
@@ -34,15 +32,19 @@ class MoviesViewController: UIViewController {
         return label
     }()
     
-    private var segmentControl: UISegmentedControl = {
+    private lazy var segmentControl: UISegmentedControl = {
         let segmentControl = UISegmentedControl(items: ["Movies List", "Favorites"])
-        // Make first segment selected
         segmentControl.selectedSegmentIndex = 0
-        
+        segmentControl.addAction(segmentControlAction, for: .valueChanged)
         // Add function to handle Value Changed events
-//        segmentControl.addTarget(self, action: #selector(segmentedValueChanged(_:)), for: .valueChanged)
         return segmentControl
     }()
+    
+    private lazy var segmentControlAction = UIAction { action in
+        self.searchBar.text = ""
+        self.tableViewViewType = self.segmentControl.selectedSegmentIndex
+        self.tableView.reloadData()
+    }
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -53,14 +55,20 @@ class MoviesViewController: UIViewController {
         return tableView
     }()
     
-    private var searchBar = UISearchBar()
+    private lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.delegate = self
+        return searchBar
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Movies"
         
         setUpUI()
-        // Do any additional setup after loading the view.
+        
+        assembleMVVM()
+        setUpBinding()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,13 +116,33 @@ class MoviesViewController: UIViewController {
         
     }
     
+    private func assembleMVVM() {
+        let networkManager = MainNetworkManager()
+        viewModel = MoviesVCViewModel(networkManager: networkManager)
+    }
+    
+    private func setUpBinding() {
+        viewModel?
+            .publisherMovies
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] _ in
+                // Timer to give some time to finish downloading the poster images
+                Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
+                    self?.tableView.reloadData()
+                }
+            })
+            .store(in: &subscribers)
+        
+        viewModel?.getMovies()
+    }
+    
     @objc private func deleteName() {
         defaults.removeObject(forKey: Constants.defaultNameKey)
         print("Default name deleted")
     }
     
     @objc private func editDefaultName() {
-        print("Edit default name button pressed.")
         present(EditNameViewController(), animated: true)
     }
 
@@ -122,24 +150,112 @@ class MoviesViewController: UIViewController {
 
 extension MoviesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        if !searchBar.text!.isEmpty {
+            return searchArr.count
+        }
+        if tableViewViewType == 0 {
+            return viewModel?.totalRows ?? 0
+        } else {
+            return viewModel?.favoritesIdArray.count ?? 0
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.movieCellIdentifier, for: indexPath) as! MovieCell
-        cell.configureCell(image: UIImage(named: "hp1")!, title: "Harry Potter", overview: Constants.lorem)
+        
+        if self.tableViewViewType == 0{
+            if let searchText = searchBar.text {
+                if searchText.count > 0 {
+                    cell.detailButtonPressed = {
+                        let movieDetailVC = self.viewModel?.showDetailSearch(movie: self.searchArr[indexPath.row])
+                        self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
+                    }
+                    cell.configureCell(movie: searchArr[indexPath.row], row: indexPath.row)
+                } else {
+                    cell.detailButtonPressed = {
+                        let movieDetailVC = self.viewModel?.showDetail(row: indexPath.row, fav: false)
+                        self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
+                    }
+                    cell.configureCell(movie: viewModel?.movies[indexPath.row], row: indexPath.row)
+                }
+            }
+//            cell.detailButtonPressed = {
+//                let movieDetailVC = self.viewModel?.showDetail(row: indexPath.row, fav: false)
+//                self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
+//            }
+//            cell.configureCell(movie: viewModel?.movies[indexPath.row], row: indexPath.row)
+        } else {
+            if let searchText = searchBar.text {
+                if searchText.count > 0 {
+                    cell.detailButtonPressed = {
+                        let movieDetailVC = self.viewModel?.showDetailSearch(movie: self.searchArr[indexPath.row])
+                        self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
+                    }
+                    cell.configureCell(movie: searchArr[indexPath.row], row: indexPath.row)
+                } else {
+                    cell.detailButtonPressed = {
+                        let movieDetailVC = self.viewModel?.showDetail(row: indexPath.row, fav: true)
+                        self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
+                    }
+                    if let id = viewModel?.favoritesIdArray[indexPath.row] {
+                        cell.configureCell(movie: viewModel?.favoriteMovies[id], row: indexPath.row)
+                    }
+                }
+            }
+//            cell.detailButtonPressed = {
+//                let movieDetailVC = self.viewModel?.showDetail(row: indexPath.row, fav: true)
+//                self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
+//            }
+//            if let id = viewModel?.favoritesIdArray[indexPath.row] {
+//                cell.configureCell(movie: viewModel?.favoriteMovies[id], row: indexPath.row)
+//            }
+                
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let movieDetailVC = MovieDetailViewController()
-        navigationController?.isNavigationBarHidden = false
-        movieDetailVC.movieImageView.image = UIImage(named: "hp1")!
-        movieDetailVC.movieTitleLabel.text = "Harry Potter"
-        movieDetailVC.overviewLabel.text = Constants.lorem
-        movieDetailVC.title = "Harry Potter"
+        tableView.deselectRow(at: indexPath, animated: true)
         
-        
-        navigationController?.pushViewController(movieDetailVC, animated: true)
+        if self.tableViewViewType == 0{
+            viewModel?.addFavorite(movie: self.viewModel?.movies[indexPath.row],fav: false)
+            tableView.reloadData()
+        } else {
+            if let id = viewModel?.favoritesIdArray[indexPath.row] {
+                if let movie = viewModel?.favoriteMovies[id] {
+                    viewModel?.addFavorite(movie: movie, fav: true)
+                    
+                    tableView.reloadData()
+                }
+            }
+            
+        }
+    }
+}
+
+extension MoviesViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if tableViewViewType == 0 {
+            if let movies = viewModel?.movies {
+                searchArr = movies.filter({ movie in
+                    let titleAndOverview = "\(movie.title) \(movie.overview)".lowercased()
+                    return titleAndOverview.contains(searchText.lowercased())
+                })
+            }
+            tableView.reloadData()
+        } else {
+            
+            if let ids = viewModel?.favoritesIdArray {
+                searchArr = ids.map({ id in
+                    return (viewModel?.favoriteMovies[id])!
+                }).filter({ movie in
+                    let titleAndOverview = "\(movie.title) \(movie.overview)".lowercased()
+                    return titleAndOverview.contains(searchText.lowercased())
+                })
+            }
+            tableView.reloadData()
+        }
     }
 }

@@ -64,7 +64,6 @@ class MovieDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Movie Title"
         setUpUI()
         // Do any additional setup after loading the view.
     }
