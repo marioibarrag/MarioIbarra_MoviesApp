@@ -1,8 +1,10 @@
 import UIKit
 import Combine
+import CoreData
 
 class MoviesViewController: UIViewController {
 
+    let CDContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let defaults = UserDefaults.standard
     private var viewModel: ViewModelPorotocol?
     private var subscribers = Set<AnyCancellable>()
@@ -71,6 +73,8 @@ class MoviesViewController: UIViewController {
         assembleMVVM()
         setUpBinding()
         editNameVC.delegate = self
+        
+        print("FileManager: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -142,11 +146,22 @@ class MoviesViewController: UIViewController {
     @objc private func deleteName() {
         defaults.removeObject(forKey: Constants.defaultNameKey)
         print("Default name deleted")
+//        let movie = NSEntityDescription.insertNewObject(forEntityName: "Movie", into: CDContext!) as! Movie
+//        movie.id = 0123
+//        movie.overview = "overview"
+//        movie.title = "title"
+//        print(movie)
     }
     
     @objc private func editDefaultName() {
         editNameVC.modalPresentationStyle = .fullScreen
         present(editNameVC, animated: true)
+        do {
+            try self.CDContext.save()
+            print("CORE DATA SAVED")
+        } catch {
+            
+        }
     }
 
 }
@@ -183,11 +198,6 @@ extension MoviesViewController: UITableViewDelegate, UITableViewDataSource {
                     cell.configureCell(movie: viewModel?.movies[indexPath.row], row: indexPath.row)
                 }
             }
-//            cell.detailButtonPressed = {
-//                let movieDetailVC = self.viewModel?.showDetail(row: indexPath.row, fav: false)
-//                self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
-//            }
-//            cell.configureCell(movie: viewModel?.movies[indexPath.row], row: indexPath.row)
         } else {
             if let searchText = searchBar.text {
                 if searchText.count > 0 {
@@ -206,14 +216,6 @@ extension MoviesViewController: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             }
-//            cell.detailButtonPressed = {
-//                let movieDetailVC = self.viewModel?.showDetail(row: indexPath.row, fav: true)
-//                self.navigationController?.pushViewController(movieDetailVC ?? MovieDetailViewController(), animated: true)
-//            }
-//            if let id = viewModel?.favoritesIdArray[indexPath.row] {
-//                cell.configureCell(movie: viewModel?.favoriteMovies[id], row: indexPath.row)
-//            }
-                
         }
         
         return cell

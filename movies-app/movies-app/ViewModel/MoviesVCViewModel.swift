@@ -17,6 +17,7 @@ protocol ViewModelPorotocol {
 
 class MoviesVCViewModel: ViewModelPorotocol {
     
+    let CDContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var totalRows: Int { movies.count }
     var publisherMovies: Published<[Movie]>.Publisher { $movies }
     
@@ -48,7 +49,6 @@ class MoviesVCViewModel: ViewModelPorotocol {
                 self?.downloadImages()
             }
             .store(in: &subscribers)
-
     }
     
     func downloadImages() {
@@ -99,12 +99,12 @@ class MoviesVCViewModel: ViewModelPorotocol {
             if let movie = movie {
                 if !movie.isFavorite {
                     movie.isFavorite = !movie.isFavorite
-                    favoriteMovies[movie.id] = movie
-                    favoritesIdArray.append(movie.id)
+                    favoriteMovies[Int(movie.id)] = movie
+                    favoritesIdArray.append(Int(movie.id))
                 } else {
                     movie.isFavorite = !movie.isFavorite
-                    favoriteMovies.removeValue(forKey: movie.id)
-                    if let index = favoritesIdArray.firstIndex(of: movie.id) {
+                    favoriteMovies.removeValue(forKey: Int(movie.id))
+                    if let index = favoritesIdArray.firstIndex(of: Int(movie.id)) {
                         favoritesIdArray.remove(at: index)
                         print(favoritesIdArray)
                     }
@@ -112,8 +112,8 @@ class MoviesVCViewModel: ViewModelPorotocol {
             }
         } else {
             if let movie = movie {
-                favoriteMovies.removeValue(forKey: movie.id)
-                if let index = favoritesIdArray.firstIndex(of: movie.id) {
+                favoriteMovies.removeValue(forKey: Int(movie.id))
+                if let index = favoritesIdArray.firstIndex(of: Int(movie.id)) {
                     favoritesIdArray.remove(at: index)
                     print(favoritesIdArray)
                 }

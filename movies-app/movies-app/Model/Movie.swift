@@ -1,4 +1,4 @@
-import Foundation
+/*import Foundation
 import UIKit
 
 class Movie: Codable {
@@ -7,7 +7,7 @@ class Movie: Codable {
     let title: String
     let posterPath: String?
     
-    var imgData: Data? = nil
+    var imgData: Data?
     var isFavorite: Bool = false
     
     enum CodingKeys: String, CodingKey {
@@ -18,3 +18,4 @@ class Movie: Codable {
     }
     
 }
+*/

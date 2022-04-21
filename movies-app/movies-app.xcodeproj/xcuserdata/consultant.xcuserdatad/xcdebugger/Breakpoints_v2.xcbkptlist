@@ -23,140 +23,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9F30D4BA-BCB5-41A6-99CD-0C009CC0F55B"
-            shouldBeEnabled = "Yes"
+            uuid = "6A05779A-BE77-4D3C-BFAD-6D99FE56C58E"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "movies-app/Views/MoviesViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
-            landmarkName = "tableView(_:numberOfRowsInSection:)"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4"
-            shouldBeEnabled = "Yes"
+            uuid = "C558377F-4D06-4F32-86F3-5BC3362120AB"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "movies-app/Views/MoviesViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "segmentControlAction"
-            landmarkType = "24">
-            <Locations>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - b307690ce3a3e312"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "movies_app.MoviesViewController.segmentControlAction.getter : __C.UIAction"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43"
-                  offsetFromSymbolStart = "168">
-               </Location>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - cb584603c00cc32e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "movies_app.MoviesViewController.segmentControlAction.setter : __C.UIAction"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43"
-                  offsetFromSymbolStart = "132">
-               </Location>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - 8966085fa1432b11"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "movies_app.MoviesViewController.segmentControlAction.modify : __C.UIAction"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43"
-                  offsetFromSymbolStart = "0">
-               </Location>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - f58896e4ffa5685e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "movies_app.MoviesViewController.segmentControlAction.modify : __C.UIAction with unmangled suffix &quot;.resume.0&quot;"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43"
-                  offsetFromSymbolStart = "17">
-               </Location>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - a30d5cbab53bb8d5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "movies_app.MoviesViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; movies_app.MoviesViewController"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43"
-                  offsetFromSymbolStart = "595">
-               </Location>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - 5596cb75c0c918ea"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "movies_app.MoviesViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;movies_app.MoviesViewController&gt;"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43"
-                  offsetFromSymbolStart = "555">
-               </Location>
-               <Location
-                  uuid = "65BA72FB-DED7-4628-B827-16D6A4A698E4 - 276d04767061ac69"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (__C.UIAction) -&gt; () in movies_app.MoviesViewController.segmentControlAction.getter : __C.UIAction"
-                  moduleName = "movies-app"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/consultant/Documents/EIT%20Course/movies-app/movies-app/Views/MoviesViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44"
-                  offsetFromSymbolStart = "41">
-               </Location>
-            </Locations>
+            startingLineNumber = "268"
+            endingLineNumber = "268"
+            landmarkName = "MoviesViewController"
+            landmarkType = "21">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
